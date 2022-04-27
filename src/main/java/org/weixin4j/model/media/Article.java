@@ -33,7 +33,8 @@ public class Article {
     private String content_source_url;  //在图文消息页面点击“阅读原文”后的页面
     private String content; //图文消息页面的内容，支持HTML标签
     private String digest;  //图文消息的描述，如本字段为空，则默认抓取正文前64个字
-    private int show_cover_pic;//是否显示封面，1为显示，0为不显示
+    private int need_open_comment = 0;//Uint32 是否打开评论，0不打开(默认)，1打开
+    private int only_fans_can_comment = 0;//是否显示封面，1为显示，0为不显示
 
     /**
      * @return the thumb_media_id
@@ -119,17 +120,19 @@ public class Article {
         this.digest = digest;
     }
 
-    /**
-     * @return the show_cover_pic
-     */
-    public int getShow_cover_pic() {
-        return show_cover_pic;
+    public int getNeed_open_comment() {
+        return need_open_comment;
     }
 
-    /**
-     * @param show_cover_pic the show_cover_pic to set
-     */
-    public void setShow_cover_pic(int show_cover_pic) {
-        this.show_cover_pic = show_cover_pic;
+    public void setNeed_open_comment(int need_open_comment) {
+        this.need_open_comment = need_open_comment;
+    }
+
+    public int getOnly_fans_can_comment() {
+        return only_fans_can_comment;
+    }
+
+    public void setOnly_fans_can_comment(int only_fans_can_comment) {
+        this.only_fans_can_comment = only_fans_can_comment;
     }
 }

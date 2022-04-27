@@ -92,7 +92,7 @@ public class MediaComponent extends AbstractComponent {
         json.put("articles", articles);
         //创建请求对象
         HttpsClient http = new HttpsClient();
-        Response res = http.post("https://api.weixin.qq.com/cgi-bin/media/uploadnews?access_token=" + weixin.getToken().getAccess_token(), json);
+        Response res = http.post("https://api.weixin.qq.com/cgi-bin/draft/add?access_token=" + weixin.getToken().getAccess_token(), json);
         //根据请求结果判定，是否验证成功
         JSONObject jsonObj = res.asJSONObject();
         if (jsonObj != null) {
@@ -106,6 +106,39 @@ public class MediaComponent extends AbstractComponent {
             } else {
                 //返回图文消息id
                 return jsonObj.getString("media_id");
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 发布能力 /发布接口
+     *
+     * 开发者需要先将图文素材以草稿的形式保存（见“草稿箱/新建草稿”，如需从已保存的草稿中选择，见“草稿箱/获取草稿列表”），选择要发布的草稿 media_id 进行发布
+     *
+     * @param media_id 图文消息，一个图文消息支持1到8条图文
+     * @return 上传成功返回图文素材Id，否则返回null
+     * @throws org.weixin4j.WeixinException 微信操作异常
+     */
+    public String freePublish(String media_id) throws WeixinException {
+        JSONObject json = new JSONObject();
+        json.put("media_id", media_id);
+        //创建请求对象
+        HttpsClient http = new HttpsClient();
+        Response res = http.post("https://api.weixin.qq.com/cgi-bin/freepublish/submit?access_token=" + weixin.getToken().getAccess_token(), json);
+        //根据请求结果判定，是否验证成功
+        JSONObject jsonObj = res.asJSONObject();
+        if (jsonObj != null) {
+            if (Configuration.isDebug()) {
+                System.out.println("uploadnews返回json：" + jsonObj.toString());
+            }
+            Object errcode = jsonObj.get("errcode");
+            if (errcode != null && !errcode.toString().equals("0")) {
+                //返回异常信息
+                throw new WeixinException(getCause(jsonObj.getIntValue("errcode")));
+            } else {
+                //返回图文消息id
+                return jsonObj.getString("publish_id");
             }
         }
         return null;

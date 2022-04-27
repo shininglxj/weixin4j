@@ -65,6 +65,45 @@ public class MaterialComponent extends AbstractComponent {
     }
 
     /**
+     * 新增永久素材
+     *
+     * @param mediaType 媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb）
+     * @param file form-data中媒体文件标识，有filename、filelength、content-type等信息
+     * @return 上传成功返回素材Id，否则返回null
+     * @throws org.weixin4j.WeixinException 微信操作异常
+     * @since 0.1.4
+     */
+    public Media addMaterial(MediaType mediaType, File file) throws WeixinException {
+        //创建请求对象
+        HttpsClient http = new HttpsClient();
+        //上传素材，返回JSON数据包
+        String jsonStr = http.uploadHttps("https https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" + weixin.getToken().getAccess_token() + "&type=" + mediaType.toString(), file);
+        JSONObject jsonObj = JSONObject.parseObject(jsonStr);
+        if (jsonObj != null) {
+            if (Configuration.isDebug()) {
+                System.out.println("新增永久素材返回json：" + jsonObj.toString());
+            }
+            Object errcode = jsonObj.get("errcode");
+            if (errcode != null && !errcode.toString().equals("0")) {
+                //返回异常信息
+                throw new WeixinException(getCause(jsonObj.getIntValue("errcode")));
+            } else {
+                //转换为Media对象
+                Media media = new Media();
+                media.setMediaType(MediaType.valueOf(WordUtils.capitalize(jsonObj.getString("type"))));
+                media.setMediaId(jsonObj.getString("media_id"));
+                //转换为毫秒数
+                long time = jsonObj.getLongValue("created_at") * 1000L;
+                media.setCreatedAt(new Date(time));
+                media.setUrl(jsonObj.getString("url"));
+                //返回多媒体文件id
+                return media;
+            }
+        }
+        return null;
+    }
+
+    /**
      * 获取临时素材(不支持视频)
      *
      * <p>
