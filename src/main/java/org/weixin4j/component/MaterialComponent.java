@@ -77,7 +77,7 @@ public class MaterialComponent extends AbstractComponent {
         //创建请求对象
         HttpsClient http = new HttpsClient();
         //上传素材，返回JSON数据包
-        String jsonStr = http.uploadHttps("https https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" + weixin.getToken().getAccess_token() + "&type=" + mediaType.toString(), file);
+        String jsonStr = http.uploadHttps("https://api.weixin.qq.com/cgi-bin/material/add_material?access_token=" + weixin.getToken().getAccess_token() + "&type=" + mediaType.toString(), file);
         JSONObject jsonObj = JSONObject.parseObject(jsonStr);
         if (jsonObj != null) {
             if (Configuration.isDebug()) {
