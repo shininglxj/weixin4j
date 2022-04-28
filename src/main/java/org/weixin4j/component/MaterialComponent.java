@@ -90,7 +90,7 @@ public class MaterialComponent extends AbstractComponent {
             } else {
                 //转换为Media对象
                 Media media = new Media();
-                media.setMediaType(MediaType.valueOf(WordUtils.capitalize(jsonObj.getString("type"))));
+                media.setMediaType(mediaType);
                 media.setMediaId(jsonObj.getString("media_id"));
                 //转换为毫秒数
                 long time = jsonObj.getLongValue("created_at") * 1000L;
